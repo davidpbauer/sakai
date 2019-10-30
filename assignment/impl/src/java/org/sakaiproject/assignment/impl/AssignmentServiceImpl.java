@@ -2035,6 +2035,11 @@ public class AssignmentServiceImpl implements AssignmentService, EntityTransferr
             AssignmentSubmission submission = getSubmission(AssignmentReferenceReckoner.reckoner().assignment(assignment).reckon().getId(), userId);
 
             if (submission != null) {
+                //if an Extension exists for the user, we switch out the assignment's overall Close date for the extension deadline. We do this if the grade has been actually released, or if the submission object has not actually been submitted yet. Additionally, we make sure that a Resubmission date is not set [make sure it's null], so that this date-switching happens ONLY under Extension-related circumstances.
+                if (submission.getProperties().get(AssignmentConstants.ALLOW_EXTENSION_CLOSETIME) != null && (BooleanUtils.toBoolean(submission.getGradeReleased()) || !BooleanUtils.toBoolean(submission.getSubmitted()))){
+                    Instant extensionCloseTime = Instant.ofEpochMilli(Long.parseLong(submission.getProperties().get(AssignmentConstants.ALLOW_EXTENSION_CLOSETIME)));
+                    isBeforeAssignmentCloseDate = !currentTime.isAfter(extensionCloseTime);
+                }
                 // check for allow resubmission or not first
                 // return true if resubmission is allowed and current time is before resubmission close time
                 // get the resubmit settings from submission object first
@@ -4245,6 +4250,15 @@ public class AssignmentServiceImpl implements AssignmentService, EntityTransferr
                                                 .withZone(zone)
                                                 .withLocale(resourceLoader.getLocale());
         return df.format(date);
+    }
+
+    @Override
+    public String getUsersLocalDateTimeStringFromProperties(String date){
+        if (date == null){
+            return null;
+        }
+        Long dateLong = Long.parseLong(date);
+        return getUsersLocalDateTimeString(Instant.ofEpochMilli(dateLong));
     }
 
     private String removeReferencePrefix(String referenceId) {

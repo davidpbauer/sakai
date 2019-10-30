@@ -766,6 +766,8 @@ public interface AssignmentService extends EntityProducer {
 
     String getUsersLocalDateTimeString(Instant date, FormatStyle dateStyle, FormatStyle timeStyle);
 
+    String getUsersLocalDateTimeStringFromProperties(String date);
+
     public List<ContentReviewResult> getContentReviewResults(AssignmentSubmission submission);
 
     public List<ContentReviewResult> getSortedContentReviewResults(AssignmentSubmission submission);
