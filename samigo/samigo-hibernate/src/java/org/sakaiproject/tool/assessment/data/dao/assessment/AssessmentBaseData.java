@@ -35,6 +35,10 @@ import org.sakaiproject.tool.assessment.data.ifc.assessment.AssessmentFeedbackIf
 import org.sakaiproject.tool.assessment.data.ifc.assessment.EvaluationModelIfc;
 import org.sakaiproject.tool.assessment.data.ifc.shared.TypeIfc;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.SequenceGenerator;
+
 public class AssessmentBaseData
     implements java.io.Serializable,
                org.sakaiproject.tool.assessment.data.ifc.assessment.AssessmentBaseIfc
@@ -42,7 +46,11 @@ public class AssessmentBaseData
 
   private static final long serialVersionUID = 7526471155622776147L;
   public static final int TITLE_LENGTH = 255;
+
+  @SequenceGenerator(name="SAM_ASSESSMENTBASE_ID_S", sequenceName="SAM_ASSESSMENTBASE_ID_S")
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "SAM_ASSESSMENTBASE_ID_S")
   private Long assessmentBaseId;
+
   private Boolean isTemplate;
   private Long parentId;
   private String title;
